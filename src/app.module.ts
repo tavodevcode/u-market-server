@@ -6,6 +6,9 @@ import { GraphQLModule } from '@nestjs/graphql'
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 import { join } from 'path'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { SubscriptionsModule } from './subscriptions/subscriptions.module';
+import { SubscriptionPackagesModule } from './subscription-packages/subscription-packages.module';
+import { PackageBenefitsModule } from './package-benefits/package-benefits.module';
 
 @Module({
   imports: [
@@ -25,7 +28,10 @@ import { TypeOrmModule } from '@nestjs/typeorm'
       autoLoadEntities: true
     }),
     // MODULES
-    UsersModule
+    UsersModule,
+    SubscriptionsModule,
+    SubscriptionPackagesModule,
+    PackageBenefitsModule
   ],
   controllers: [AppController],
   providers: [AppService]

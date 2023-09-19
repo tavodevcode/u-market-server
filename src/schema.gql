@@ -18,15 +18,49 @@ enum UserGender {
   male
 }
 
+type Subscription {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type PackageBenefit {
+  id: String!
+  description: String!
+  packages: [SubscriptionPackage!]
+}
+
+type SubscriptionPackage {
+  id: String!
+  name: String!
+  price: Float!
+  description: String!
+  benefits: [PackageBenefit!]
+}
+
 type Query {
   users: [User!]!
   user(id: String!): User!
+  subscriptions: [Subscription!]!
+  subscription(id: Int!): Subscription!
+  subscriptionPackages: [SubscriptionPackage!]!
+  subscriptionPackage(id: String!): SubscriptionPackage!
+  packageBenefits: [PackageBenefit!]!
+  packageBenefit(id: String!): PackageBenefit!
 }
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: String!): User!
+  createSubscription(createSubscriptionInput: CreateSubscriptionInput!): Subscription!
+  updateSubscription(updateSubscriptionInput: UpdateSubscriptionInput!): Subscription!
+  removeSubscription(id: Int!): Subscription!
+  createSubscriptionPackage(createSubscriptionPackageInput: CreateSubscriptionPackageInput!): SubscriptionPackage!
+  updateSubscriptionPackage(updateSubscriptionPackageInput: UpdateSubscriptionPackageInput!): SubscriptionPackage!
+  removeSubscriptionPackage(id: String!): Boolean!
+  createPackageBenefit(createPackageBenefitInput: CreatePackageBenefitInput!): PackageBenefit!
+  updatePackageBenefit(updatePackageBenefitInput: UpdatePackageBenefitInput!): PackageBenefit!
+  removePackageBenefit(id: Int!): PackageBenefit!
 }
 
 input CreateUserInput {
@@ -48,4 +82,41 @@ input UpdateUserInput {
   gender: UserGender
   age: String
   id: String!
+}
+
+input CreateSubscriptionInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateSubscriptionInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateSubscriptionPackageInput {
+  name: String!
+  price: Float!
+  description: String!
+  benefits: [String!] = []
+}
+
+input UpdateSubscriptionPackageInput {
+  name: String
+  price: Float
+  description: String
+  benefits: [String!] = []
+  id: String!
+}
+
+input CreatePackageBenefitInput {
+  description: String!
+  subscription_package_id: String!
+}
+
+input UpdatePackageBenefitInput {
+  description: String
+  subscription_package_id: String
+  id: Int!
 }
