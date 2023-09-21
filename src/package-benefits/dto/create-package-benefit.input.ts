@@ -1,14 +1,16 @@
 import { InputType, Field } from '@nestjs/graphql'
-import { IsString, IsUUID } from 'class-validator'
+import { IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator'
 
 @InputType()
 export class CreatePackageBenefitInput {
+  @IsNotEmpty()
   @IsString()
+  @MinLength(4)
+  @MaxLength(125)
   @Field()
   description: string
 
-  @IsString()
-  @IsUUID()
-  @Field()
-  subscription_package_id: string
+  @IsOptional()
+  @Field(() => [String], { nullable: true, defaultValue: [] })
+  packages?: string[]
 }

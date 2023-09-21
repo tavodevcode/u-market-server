@@ -15,7 +15,12 @@ export class SubscriptionPackagesResolver {
 
   @Query(() => [SubscriptionPackage], { name: 'subscriptionPackages' })
   async subscriptionPackages(): Promise<SubscriptionPackage[]> {
-    return this.subscriptionPackagesService.subscriptionPackages()
+    return await this.subscriptionPackagesService.subscriptionPackages()
+    // const subscriptionPackages = await this.subscriptionPackagesService.subscriptionPackages()
+
+    // console.log('>>>subscriptionPackages', subscriptionPackages[0])
+
+    // return subscriptionPackages
   }
 
   @Query(() => SubscriptionPackage, { name: 'subscriptionPackage' })
@@ -35,6 +40,7 @@ export class SubscriptionPackagesResolver {
 
   @ResolveField()
   async benefits(@Parent() subscriptionPackage: SubscriptionPackage) {
+    // console.log('>>>[subscriptionPackage]', subscriptionPackage)
     return await this.subscriptionPackagesService.benefits(subscriptionPackage.benefits)
   }
 }

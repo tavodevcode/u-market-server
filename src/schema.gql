@@ -60,7 +60,7 @@ type Mutation {
   removeSubscriptionPackage(id: String!): Boolean!
   createPackageBenefit(createPackageBenefitInput: CreatePackageBenefitInput!): PackageBenefit!
   updatePackageBenefit(updatePackageBenefitInput: UpdatePackageBenefitInput!): PackageBenefit!
-  removePackageBenefit(id: Int!): PackageBenefit!
+  removePackageBenefit(id: String!): Boolean!
 }
 
 input CreateUserInput {
@@ -112,11 +112,11 @@ input UpdateSubscriptionPackageInput {
 
 input CreatePackageBenefitInput {
   description: String!
-  subscription_package_id: String!
+  packages: [String!] = []
 }
 
 input UpdatePackageBenefitInput {
   description: String
-  subscription_package_id: String
-  id: Int!
+  packages: [String!] = []
+  id: String!
 }

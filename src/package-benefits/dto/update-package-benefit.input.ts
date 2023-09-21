@@ -1,8 +1,11 @@
-import { CreatePackageBenefitInput } from './create-package-benefit.input';
-import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
+import { IsNotEmpty, IsUUID } from 'class-validator'
+import { CreatePackageBenefitInput } from './create-package-benefit.input'
+import { InputType, Field, Int, PartialType } from '@nestjs/graphql'
 
 @InputType()
 export class UpdatePackageBenefitInput extends PartialType(CreatePackageBenefitInput) {
-  @Field(() => Int)
-  id: number;
+  @IsNotEmpty()
+  @IsUUID()
+  @Field()
+  id: string
 }

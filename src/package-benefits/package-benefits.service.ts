@@ -15,19 +15,33 @@ export class PackageBenefitsService {
   ) {}
 
   async create(createPackageBenefitInput: CreatePackageBenefitInput): Promise<PackageBenefit> {
-    return await this.packageBenefitRepository.save(createPackageBenefitInput)
+    const { packages, ...resCreatePackageBenefitInput } = createPackageBenefitInput
+
+    return await this.packageBenefitRepository.save({
+      ...resCreatePackageBenefitInput,
+      packages: packages && (await this.subscriptionPackagesService.subscriptionPackagesByIds(packages))
+    })
   }
 
   async packageBenefits(): Promise<PackageBenefit[]> {
     return await this.packageBenefitRepository.find({
       relations: {
-        packages: true
+        packages: {
+          benefits: true
+        }
       }
     })
   }
 
   async packageBenefitById(id: string): Promise<PackageBenefit> {
-    return await this.packageBenefitRepository.findOneBy({ id })
+    return await this.packageBenefitRepository.findOne({
+      where: { id },
+      relations: {
+        packages: {
+          benefits: true
+        }
+      }
+    })
   }
 
   async packageBenefitsByFields(benefits: PackageBenefit[]): Promise<PackageBenefit[]> {
@@ -35,20 +49,39 @@ export class PackageBenefitsService {
   }
 
   async packageBenefitsByIds(ids: string[]): Promise<PackageBenefit[]> {
-    return await this.packageBenefitRepository.findBy({
-      id: In(ids)
+    return await this.packageBenefitRepository.find({
+      where: { id: In(ids) },
+      relations: {
+        packages: {
+          benefits: true
+        }
+      }
     })
   }
 
-  update(id: number, updatePackageBenefitInput: UpdatePackageBenefitInput) {
-    return `This action updates a #${id} packageBenefit`
+  async update(id: string, updatePackageBenefitInput: UpdatePackageBenefitInput): Promise<PackageBenefit> {
+    const { packages, ...resUpdatePackageBenefitInput } = updatePackageBenefitInput
+
+    const packageBenefit = await this.packageBenefitRepository.findOneBy({ id })
+
+    this.packageBenefitRepository.merge(packageBenefit, {
+      ...resUpdatePackageBenefitInput,
+      packages: packages && (await this.subscriptionPackagesService.subscriptionPackagesByIds(packages))
+    })
+
+    return await this.packageBenefitRepository.save(packageBenefit)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} packageBenefit`
+  async remove(id: string): Promise<boolean> {
+    const packageBenefit = await this.packageBenefitRepository.findOneBy({ id })
+
+    if (!packageBenefit) return false
+
+    await this.packageBenefitRepository.remove(packageBenefit)
+    return true
   }
 
-  async package(packages: SubscriptionPackage[]): Promise<SubscriptionPackage[]> {
-    return await this.subscriptionPackagesService.subscriptionPackagesById(packages)
+  async packages(packages: SubscriptionPackage[]): Promise<SubscriptionPackage[]> {
+    return await this.subscriptionPackagesService.subscriptionPackagesByIds(packages.map(p => p.id))
   }
 }

@@ -10,32 +10,37 @@ export class PackageBenefitsResolver {
   constructor(private readonly packageBenefitsService: PackageBenefitsService) {}
 
   @Mutation(() => PackageBenefit)
-  createPackageBenefit(@Args('createPackageBenefitInput') createPackageBenefitInput: CreatePackageBenefitInput): Promise<PackageBenefit> {
+  async createPackageBenefit(@Args('createPackageBenefitInput') createPackageBenefitInput: CreatePackageBenefitInput): Promise<PackageBenefit> {
     return this.packageBenefitsService.create(createPackageBenefitInput)
   }
 
   @Query(() => [PackageBenefit], { name: 'packageBenefits' })
-  packageBenefits() {
+  async packageBenefits(): Promise<PackageBenefit[]> {
     return this.packageBenefitsService.packageBenefits()
+    // const packageBenefits = await this.packageBenefitsService.packageBenefits()
+
+    // console.log('>>>packageBenefits', packageBenefits)
+    // return packageBenefits
   }
 
   @Query(() => PackageBenefit, { name: 'packageBenefit' })
-  packageBenefit(@Args('id') id: string) {
-    return this.packageBenefitsService.packageBenefitById(id)
+  async packageBenefit(@Args('id') id: string): Promise<PackageBenefit> {
+    return await this.packageBenefitsService.packageBenefitById(id)
   }
 
   @Mutation(() => PackageBenefit)
-  updatePackageBenefit(@Args('updatePackageBenefitInput') updatePackageBenefitInput: UpdatePackageBenefitInput) {
+  async updatePackageBenefit(@Args('updatePackageBenefitInput') updatePackageBenefitInput: UpdatePackageBenefitInput): Promise<PackageBenefit> {
     return this.packageBenefitsService.update(updatePackageBenefitInput.id, updatePackageBenefitInput)
   }
 
-  @Mutation(() => PackageBenefit)
-  removePackageBenefit(@Args('id', { type: () => Int }) id: number) {
+  @Mutation(() => Boolean)
+  async removePackageBenefit(@Args('id') id: string): Promise<boolean> {
     return this.packageBenefitsService.remove(id)
   }
 
   @ResolveField()
   async packages(@Parent() packageBenefit: PackageBenefit): Promise<SubscriptionPackage[]> {
-    return await this.packageBenefitsService.package(packageBenefit.packages)
+    // console.log('>>>[packageBenefit]', packageBenefit)
+    return await this.packageBenefitsService.packages(packageBenefit.packages)
   }
 }

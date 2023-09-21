@@ -10,7 +10,9 @@ export class PackageBenefit {
   @Field()
   id: string
 
-  @Column()
+  @Column({
+    length: 125
+  })
   @Field()
   description: string
 

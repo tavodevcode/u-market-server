@@ -3,7 +3,7 @@ import { CreateSubscriptionPackageInput } from './dto/create-subscription-packag
 import { UpdateSubscriptionPackageInput } from './dto/update-subscription-package.input'
 import { InjectRepository } from '@nestjs/typeorm'
 import { SubscriptionPackage } from './entities/subscription-package.entity'
-import { Repository } from 'typeorm'
+import { In, Repository } from 'typeorm'
 import { PackageBenefitsService } from 'src/package-benefits/package-benefits.service'
 import { PackageBenefit } from 'src/package-benefits/entities/package-benefit.entity'
 
@@ -26,7 +26,9 @@ export class SubscriptionPackagesService {
   async subscriptionPackages(): Promise<SubscriptionPackage[]> {
     return await this.subscriptionPackageRepository.find({
       relations: {
-        benefits: true
+        benefits: {
+          packages: true
+        }
       }
     })
   }
@@ -35,13 +37,28 @@ export class SubscriptionPackagesService {
     return await this.subscriptionPackageRepository.findOne({
       where: { id },
       relations: {
-        benefits: true
+        benefits: {
+          packages: true
+        }
       }
     })
   }
 
-  async subscriptionPackagesById(subscriptionPackage: SubscriptionPackage[]): Promise<SubscriptionPackage[]> {
+  async subscriptionPackagesByFields(subscriptionPackage: SubscriptionPackage[]): Promise<SubscriptionPackage[]> {
     return await this.subscriptionPackageRepository.findBy(subscriptionPackage)
+  }
+
+  async subscriptionPackagesByIds(id: string[]): Promise<SubscriptionPackage[]> {
+    return await this.subscriptionPackageRepository.find({
+      where: {
+        id: In(id)
+      },
+      relations: {
+        benefits: {
+          packages: true
+        }
+      }
+    })
   }
 
   async update(id: string, updateSubscriptionPackageInput: UpdateSubscriptionPackageInput): Promise<SubscriptionPackage> {
